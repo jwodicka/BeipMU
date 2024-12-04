@@ -4,7 +4,7 @@
 A trigger is a set of actions that is performed when an event occurs that matches it’s criteria. This is called "firing".
 For example:
 If you receive a Page from a friend, you might like it to be a different color from the rest of your text.
-To to this you need to have some text for Beipmu to Match, and then an action to perform. When the text is matched, the trigger "fire" and the text is colored.
+To to this you need to have some text for BeipMu to Match, and then an action to perform. When the text is matched, the trigger "fire" and the text is colored.
 Luckily, this is *very easy.*
 
 ## Your first trigger
@@ -35,7 +35,7 @@ In the "Matcharoo" text field, we are going to add some text to match on:
 
     pages, 
 
-This will make Beipmu match “pages, “. This is a simple trigger that just looks for text, like you'd see in the main window.
+This will make BeipMu match "pages, ". This is a simple trigger that just looks for text, like you'd see in the main window.
 
 In the "Appearance" tab, tick the check box for “Change Foreground” - We'll go through the options in more detail later on - For now, You can use the Foreground button to pick a colour for your text if you like, or leave it as the default. Optionally on the right you can select **bold**, *Italic*, _Underline_, ~Strikeout~ or Flashing. Or any ***combination*** you like.
 Optionally you can change the background colour, and even the font.
@@ -121,10 +121,10 @@ This should now match any page that comes in or goes out, using one trigger.
 ## Advanced options
 Let's have a look at the tab options in a little more detail. Most of the settings are very straightforward and intuitive.
 
-But first we need to know in what order triggers are checked agaisnt the text. Triggers, by default, will stack: You can fire one then have a number of others get applied. In this case you'd want to work out the order of events!
+But first we need to know in what order triggers are checked against the text. Triggers, by default, will stack: You can fire one then have a number of others get applied. In this case you'd want to work out the order of events!
 
 ### Processing order
-BeipMu will process triggers in heirachy order. Either the Global triggers first, then the Server Triggers then the Character specific triggers, or the other way around, and Character triggers will fire first, then Server, then Global
+BeipMu will process triggers in hierarchy order. Either the Global triggers first, then the Server Triggers then the Character specific triggers, or the other way around, and Character triggers will fire first, then Server, then Global
 ***Processing order of trigger note***
 Triggers are chacked from the top of the list, then down to the bottom, per type. So The list of global triggers from top to bottom, then moving on to the Server list then the Character list. If you need re-arrange them... you can just drag them around! It is possible to drag a trigger from Character to Server or Global and vice versa if you need to.
 
@@ -133,9 +133,9 @@ Text, for your benefit, that lets you describe what this trigger is doing. You c
 ### Matcheroo
 This is where you match text or regular expression goes.
 ### Test String
-Type some text that you want to test matching against the matcheroo. The parts that match will hilight and if using a regular expression, the ()'d sub expressions will be colored differently. This is very useful when first creating a trigget to easily test if it matches properly, and also to provide an example of what it's supposed to match.
+Type some text that you want to test matching against the matcheroo. The parts that match will highlight and if using a regular expression, the ()'d sub expressions will be colored differently. This is very useful when first creating a trigger to easily test if it matches properly, and also to provide an example of what it's supposed to match.
 ### Match Case
-In a Simple Matcheroo trigger, this tells Beipmu that if the match text is “Page”, then it should only match “Page” with a capital P, and not “page”. It is off by default.
+In a Simple Matcheroo trigger, this tells BeipMu that if the match text is “Page”, then it should only match “Page” with a capital P, and not “page”. It is off by default.
 ### Whole Word
 By default, BeipMu will look for a match, even inside other words. So “page” will also match “pages, paged, empaged’. Tick this box to make sure BeipMu matches what you _expect_ it to match, unless you need it to do otherwise.
 ### Line Start With
@@ -179,7 +179,7 @@ Makes fonts _Underlined_.
 Puts a ~line through the text~.
 #### Flashing
 Makes the text flash.
-“Use fast flash” makes it flash *faster!* - For when you relly need to see something!
+“Use fast flash” makes it flash *faster!* - For when you really need to see something!
 
 ### Paragraph
 These settings apply to the entire wrapped line of text, not the part that was matched
@@ -285,13 +285,13 @@ As BeipMu is a modern client, it supports unicode characters, accented text and 
 #### Gag this line
 The main event. Tick this and whatever is matched will not be displayed.
 
-Gagging helps you trivially remove unwanted text from your screen using a trigger. It does **not** have to be enabled to remove text frem your main window to a spawn panel.
+Gagging helps you trivially remove unwanted text from your screen using a trigger. It does **not** have to be enabled to remove text from your main window to a spawn panel.
 #### Gag this line in the log file
-This option prevents the text from being logged. This means you can have it show onyour main window but not inyour log file, if you have logging turned on.
+This option prevents the text from being logged. This means you can have it show on your main window but not inyour log file, if you have logging turned on.
 ### Gag Example
 You would like to gag the exit message in one of your favorite hangouts:
 
-    The huge oak doors that have stood the test of a thousand year's creak open ponderously, letting the harsh and unforgiving light of the outer realms into the snug and cozy bar (Don't for get to pay your tab or Grognog the Half Orc hobbit will come for your knees: 17% sales tax pplies and a 15% house gratuity for service. We do not accept personal cheques or cursed daggers. Please quaff responsibly.)
+    The huge oak doors that have stood the test of a thousand year's creak open ponderously, letting the harsh and unforgiving light of the outer realms into the snug and cozy bar (Don't for get to pay your tab or Grognog the Half Orc hobbit will come for your knees: 17% sales tax applies and a 15% house gratuity for service. We do not accept personal cheques or cursed daggers. Please quaff responsibly.)
     
 Ok that was cute the first time but... yeesh! So let's just slip 
 
@@ -316,7 +316,7 @@ This option just turns the feature on or off.
 ### Example
 There is no other option here because it's beautifully simple:- A small notification pops up with the matched text on it, and windows plays it's default chime.
 
-This is most useful for triggers that are set to fire when BeipMu is not in focus. For example, you already have a trigger that matches pages and colors them, but you can duplicate it, activate "Toast message when trigger hit" and disable any other outputs that your original trigger had. Then both will run when you're away form BeipMU but only the text highlight versionw ill run when BeipMu is in focus.
+This is most useful for triggers that are set to fire when BeipMu is not in focus. For example, you already have a trigger that matches pages and colors them, but you can duplicate it, activate "Toast message when trigger hit" and disable any other outputs that your original trigger had. Then both will run when you're away form BeipMU but only the text highlight version will run when BeipMu is in focus.
 
 
 ### Script
@@ -324,7 +324,7 @@ If you have written a script for BeipMu, you can have it run as the result of a 
 #### Enabled
 Turns the option on, or off.
 #### Name of the function to call
-Some sort of wizardy goes on here. I don’t trust it. our wizard says:
+Some sort of wizardry goes on here. I don’t trust it. our wizard says:
 
 "All you put here is the function name, not the script. This is so that the scripts can be compiled in advance and execute efficiently."
 
