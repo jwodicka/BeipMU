@@ -63,7 +63,7 @@ Below the Global trigger tree is a separate tree of sample triggers, you can use
 
 It’s a way to explain to a computer what you want it to look for. It contains codes for ‘Any of these specific things things’, ‘Not that’, ‘Pretty much anything’, and ‘Only if it’s the start of the line’ and many other useful concepts.
 
-You can use websites like https://regexr.com to test your Regular Expression (RegEx) code on any text you like (You can just copy and paste it from BeipMu), as well as use it’s built in reference guide.
+You can use websites like https://regexr.com to test your Regular Expression (RegEx) code on any text you like (You can just copy and paste it from BeipMu), as well as use its built in reference guide.
 
 ## Why would I need it?
 
@@ -332,7 +332,7 @@ But you know wizards. Shifty lot. The best thing to do would be to have a look a
 
 ## Sub Triggers
 
-Each trigger can have sub-triggers that act on the text that was captured by the primary trigger. To make one, select your primary trigger and just hit the "New" button. You can also drag an existing trigger onto another to make it a sub-trigger.
+Each trigger can have sub-triggers that act on the line that the primary trigger matched. To make one, select your primary trigger and just hit the "New" button. You can also drag an existing trigger onto another to make it a sub-trigger.
 
 ## Example
 
@@ -340,28 +340,32 @@ You are capturing text that has a common prefix but the text after that is varia
 
 + Game> Alex Checked your Stats
 + Game> Alice looked at you
-+ Game> Bulletin Board Updated (BBoard 2/34: New rules for IC combat in the Golen Arena)
++ Game> Bulletin Board Updated [BBoard 2/34: New rules for IC combat in the Golen Arena]
 + Game> Grognog has placed a bounty for Unpaid Bar Tab on you!
 
-The captured text for the Primary trigger is passed to the sub triggers, so if you used:
+You want to ignore lines without the prefix, like these:
 
-`^Game> (.*)`
++ Alice says "I just Checked your Stats"
++ Grognog thinks you've had enough.
 
-Then the Sub triggers would be operating on the text that came after "Game>" but would not include it, as (.\*) is the match group. 
 
-You could also match the entire string:
+Any line which matches the trigger will be passed to the sub-trigger for additional processing.
+
+We can find all lines with the prefix using a regex like:
 
 `^Game> .*`
 
-And use a sub trigger to divide the text using:
+Then we can use a sub trigger to divide the text with capturing groups, like this:
 
 `^(Game>.)(.*)`
 
-Which would then allow:
+Now we've broken the text up into segments:
 
-+ \0 : Game> Alex Checked your Stats
-+ \1 : Game> 
-+ \2 : Alex Checked your Stats
+| Segment | Text                            |
+| ------- | ------------------------------- |
+| \0      | `Game> Alex Checked your Stats` |
+| \1      | `Game>`                         |
+| \2      | `Alex Checked your Stats`       |
 
 You could then use the Filter Text option of the sub trigger:
 
@@ -370,6 +374,32 @@ You could then use the Filter Text option of the sub trigger:
 Resulting in...
 
     📈 Alex Checked your Stats!
+
+Technically, we don't need the sub-trigger here. We could have just used the capturing groups and had the main trigger do this work. But what if we wanted to have multiple different triggers for lines that start with `Game>` without repeating ourselves?
+
+We could make one sub-trigger for showing us when someone checks our stats, and another for Bulletin Board updates:
+
+* **Main Trigger**
+
+  | Setting     | Value       |
+  | ----------- | ----------- |
+  | Matcharoo   | `^Game> .*` |
+
+  * **Sub-Trigger 1**
+
+    | Setting     | Value                      |
+    | ----------- | -------------------------- |
+    | Matcharoo   | `(\w+) Checked your Stats` |
+    | Filter Text | `📈 \1`                    |
+
+  * **Sub-Trigger 2** 
+
+    | Setting     | Value                                                                                  |
+    | ----------- | -------------------------------------------------------------------------------------- |
+    | Matcharoo   | `Bulletin Board Updated \[(BBoard 2/34: New rules for IC combat in the Golen Arena)\]` |
+    | Filter Text | `📪 \1`                                                                               |
+
+Now, we've got fancy processing for the lines that start with `Game>`, but we pass the rest through unchanged!
     
 ### Sub Sub Triggers.
 
