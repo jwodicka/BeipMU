@@ -379,7 +379,7 @@ Technically, we don't need the sub-trigger here. We could have just used the cap
 
 We could make one sub-trigger for showing us when someone checks our stats, and another for Bulletin Board updates:
 
-* **Main Trigger**
+* **Primary Trigger**
 
   | Setting     | Value       |
   | ----------- | ----------- |
@@ -392,7 +392,7 @@ We could make one sub-trigger for showing us when someone checks our stats, and 
     | Matcharoo   | `(\w+) Checked your Stats` |
     | Filter Text | `📈 \1`                    |
 
-  * **Sub-Trigger 2** 
+  * **Sub-Trigger 2**
 
     | Setting     | Value                                                                                  |
     | ----------- | -------------------------------------------------------------------------------------- |
@@ -400,28 +400,76 @@ We could make one sub-trigger for showing us when someone checks our stats, and 
     | Filter Text | `📪 \1`                                                                               |
 
 Now, we've got fancy processing for the lines that start with `Game>`, but we pass the rest through unchanged!
-    
-### Sub Sub Triggers.
 
-This is a thing. Let's look at your unfortunate lapse of memory for paying your bar tab (Hey, goats milk ain't cheap!):
+### Sub-Sub Triggers (and more!)
 
-    Primary trigger:    ^Game> .*
-    Captures:           Game> Grognog has placed a bounty for Unpaid Bar Tab on you!
-     Sub Trigger1:      ^(Game>.)(.*bounty.*)
-        Capture     \0  Game> Grognog has placed a bounty for Unpaid Bar Tab on you!
-        Capture     \1  Game>
-        Capture     \2  Grognog has placed a bounty for Unpaid Bar Tab on you!
-      Sub Sub Trigger:  (\w+\s){1,3}has placed a bounty for (.*) on you!
-                        We want to capture the name, and the reason. In this case I'm assuming that the name may be up to three words
-                        long, seperated by a space or punctuation. Eg. Grognor, Grognor-half-Hobbit, El'rick, Fae O'Bannon.
-        Filter:         ⚠ There was a bounty on you for \2 from \1!
-        Send Text:      $pay/bounty \1
-        Capture     \0  Grognog has placed a bounty for Unpaid Bar Tab on you!
-        Capture     \1  Grognog
-        Capture     \2  Unpaid Bar Tab
-        Result:         ⚠ There was a bounty on you for Unpaid Bar Tab from Grognor!
-                        You attempt to pay Grognor your bounty price.
-                        Insufficient funds. Grognor is coming for your knees.
-                        
-And so the wheels of justice roll on, you monster.
-        
+A trigger that's inside another trigger can still hold a trigger! You can stack triggers inside each other as deep as you want. Whatever makes you happy, Beip isn't gonna judge.
+
+But why would you want to do that? Here's an example:
+
+#### Example
+
+Let's build a trigger to help with your unfortunate lapse of memory for paying your bar tab (Hey, goats milk ain't cheap!):
+
+* **Primary Trigger**
+
+  | Setting     | Value       |
+  | ----------- | ----------- |
+  | Matcharoo   | `^Game> .*` |
+
+  This trigger makes sure we're only looking at game messages, and not any old thing someone might say.
+  We don't want to pay off our bill just because someone _claims_ we owe it.
+
+  * **Sub-Trigger**
+
+    | Setting     | Value                 |
+    | ----------- | --------------------- |
+    | Matcharoo   | `bounty`              |
+
+    This trigger looks for messages that include the word "bounty". We might be able to get away without this,
+    but if we want to do anything else with bounty messages, this lets us match any of them.
+
+    * **Sub-Sub-Trigger**
+
+      | Setting     | Value                                                  |
+      | ----------- | ------------------------------------------------------ |
+      | Matcharoo   | `(\w+[\s-']){1,3}has placed a bounty for (.*) on you!` |
+      | Filter Text | `⚠ There was a bounty on you for \2 from \1!`         |
+      | Send Text   | `$pay/bounty \1`                                       |
+
+      This trigger captures the name, and the reason.
+      We're assuming that the name may be up to three words long, separated by a space or certain punctuation.
+      E.g. Grognor, Grognor-half-Hobbit, El'rick, Fae O'Bannon.
+
+      We use Filter Text to rewrite the message we see into something that we'll have an easy time recognizing.
+
+      We use Send Text to automatically send the command back to the game to try to pay off the bill.
+
+And here's what happens when the message comes in:
+
+    Game> Grognog has placed a bounty for Unpaid Bar Tab on you!
+
+* The primary trigger matches the line because it starts with `Game> `. It hands it to the sub-trigger.
+* The sub-trigger matches because it contains the word `bounty`. It hands it to the sub-sub-trigger.
+* The sub-sub-trigger matches and captures a few things:
+
+  | Segment | Text                                                     |
+  | ------- | -------------------------------------------------------- |
+  | \0      | `Grognog has placed a bounty for Unpaid Bar Tab on you!` |
+  | \1      | `Grognog`                                                |
+  | \2      | `Unpaid Bar Tab`                                         |
+
+* The sub-sub-trigger filters the message, so you see:
+
+      ⚠ There was a bounty on you for Unpaid Bar Tab from Grognog!
+
+* The sub-sub-trigger also sends the command to the game to try to pay the bounty:
+
+      $pay/bounty Grognog
+
+* By default, Beip doesn't show you things you told it to send, so you just see the response from the game:
+
+      You attempt to pay Grognor your bounty price.
+      Insufficient funds. Grognor is coming for your knees.
+
+* And so the wheels of justice roll on, you monster.
